@@ -3,7 +3,11 @@ import java.net.*;
 import java.nio.file.*;
 import java.util.*;
 
-// Networking assignment
+/**
+ * NETWORKING ASSIGNMENT
+ * @author Daniel Weiner
+ *
+ */
 public class FileSrv2pm {
 
 	public static void main(String[] args) throws IOException {
