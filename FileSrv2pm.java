@@ -56,6 +56,7 @@ public class FileSrv2pm {
 
 			String body = "";
 			String status;
+			String url = "http://localhost:11114/src/";
 			byte[] content;
 			if (dir.isDirectory()) {
 				status = "200 OK";
@@ -64,7 +65,11 @@ public class FileSrv2pm {
 				for (int i = 0; i < listOfFiles.length; i++) {
 					if (listOfFiles[i].isFile()) {
 						System.out.println("File " + listOfFiles[i].getName());
-						body += "this file is: " + listOfFiles[i] + "<br>";
+						//body += "this file is: " + listOfFiles[i] + "<br>";
+						//String link = listOfFiles[i].getName().split(".")[0];
+						String link = listOfFiles[i].getName();
+						body += "<a href =\"" + url +  link +"\">" + link + "</a><br>";
+						
 					} else if (listOfFiles[i].isDirectory()) {
 						System.out.println("Directory " + listOfFiles[i].getName());
 					}
@@ -79,9 +84,9 @@ public class FileSrv2pm {
 				//	    String resp = head + body;
 				out.write(head.getBytes());
 				out.write(content);
-				
+
 				//content = Files.readAllBytes(pathfile);
-				
+
 			}
 			else {
 				if (!exists) {
