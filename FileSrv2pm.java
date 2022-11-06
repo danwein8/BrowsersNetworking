@@ -28,6 +28,9 @@ public class FileSrv2pm {
 			OutputStream out = sock.getOutputStream();
 			BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
+			String password = "1234";
+			boolean loggedIn = true;
+
 			String req = "";
 			String line;
 			while ((line = in.readLine()) != null && !(line.equals("")) )
@@ -39,6 +42,14 @@ public class FileSrv2pm {
 	    else
 		System.out.println("line == " + line);
 			 */
+			
+			if (loggedIn == false)
+			{
+				String authorize = "<html><body><label for=\"Password\">Password:</label><input type=\"text\" id=\"Password\" name=\"Password\">";
+				byte[] content2;
+				content2 = authorize.getBytes();
+				out.write(content2);
+			}
 			if (req.length()==0) {
 				System.out.println("!!!!!!!empty request (?)");
 				continue;
@@ -73,7 +84,7 @@ public class FileSrv2pm {
 						//String link = listOfFiles[i].getName().split(".")[0];
 						String link = listOfFiles[i].getName();
 						body += "<a href =\"" + url +  link +"\">" + link + "</a><br>";
-						
+
 					} else if (listOfFiles[i].isDirectory()) {
 						System.out.println("Directory " + listOfFiles[i].getName());
 					}
