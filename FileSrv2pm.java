@@ -59,6 +59,7 @@ public class FileSrv2pm {
 
 			String firstLine = req.split(crlf)[0];
 			String res = firstLine.split(" ")[1];
+			res = res.split("\\?")[0];
 
 			System.out.println("res req'ed: " + res);
 
@@ -68,6 +69,39 @@ public class FileSrv2pm {
 			//File dir1 = dir.getParent();
 			System.out.println("\n\n\n!!!!!!!!!!!!" + dir.isDirectory() + "\n\n\n");
 			System.out.println("\n\n\n!!!!!!!!!!!!" + dir + "\n\n\n");
+			
+			
+			
+			String color = null;
+			
+			String firstline = req.split("\r\n")[0];
+			System.out.println("firstline: "+firstline);
+			String getParamList = firstline.substring(firstline.indexOf("?")+1,firstline.indexOf("HTTP")-1);
+			//String path2 = firstline.split(" ")[1].substring(2);
+			System.out.println("getParmList: "+getParamList); //+",path2="+path2+".");
+			String[] GETKeyVals = getParamList.split("&");
+			for (int i = 0; i < GETKeyVals.length; i++) {
+				System.out.println("   get param: " + GETKeyVals[i]);
+				String[] keyAndVal = GETKeyVals[i].split("=");
+				if (keyAndVal[0].equals("color")) {
+					color = keyAndVal[1];
+					System.out.println("!!!!!color value from get param: "+color);
+				}
+			}
+
+			if (color == null) {
+
+				String cookieLine = req.split("Cookie: ")[1];
+				cookieLine = cookieLine.split("\r\n")[0];
+				String[] cookieKeyAndVal = cookieLine.split("=");
+				if (cookieKeyAndVal[0].equals("color"))
+					color = cookieKeyAndVal[1];
+				System.out.println("!!!!color from cookie: " + color);
+			}
+
+			
+			
+			
 
 			String body = "";
 			String status;
@@ -117,7 +151,7 @@ public class FileSrv2pm {
 				String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
 						"Content-Length: " +
 						//body.length() +
-						content.length + crlf + crlf;
+						content.length + crlf + "Set-Cookie: color="+color + crlf + crlf;
 				//	    String resp = head + body;
 				out.write(head.getBytes());
 				out.write(content);
