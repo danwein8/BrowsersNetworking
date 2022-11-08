@@ -71,7 +71,7 @@ public class FileSrv2pm {
 			System.out.println("\n\n\n!!!!!!!!!!!!" + dir + "\n\n\n");
 			
 			
-			
+			//START COOKIE ADD IN
 			String color = null;
 			
 			String firstline = req.split("\r\n")[0];
@@ -85,11 +85,12 @@ public class FileSrv2pm {
 				String[] keyAndVal = GETKeyVals[i].split("=");
 				if (keyAndVal[0].equals("color")) {
 					color = keyAndVal[1];
-					System.out.println("!!!!!color value from get param: "+color);
+					System.out.println("\n\n!!!!!color value from get param: "+ color + "\n\n");
 				}
 			}
 
-			if (color == null) {
+			if (color == null) 
+			{
 
 				String cookieLine = req.split("Cookie: ")[1];
 				cookieLine = cookieLine.split("\r\n")[0];
@@ -99,8 +100,7 @@ public class FileSrv2pm {
 				System.out.println("!!!!color from cookie: " + color);
 			}
 
-			
-			
+			//END COOKIE ADD IN
 			
 
 			String body = "";
@@ -129,10 +129,11 @@ public class FileSrv2pm {
 				String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
 						"Content-Length: " +
 						//body.length() +
-						content.length + crlf + crlf;
+						content.length + crlf + "Set-Cookie: color="+color + "; Path=/" + crlf + crlf;
 				//	    String resp = head + body;
 				out.write(head.getBytes());
 				out.write(content);
+				System.out.println("\n\n" + head + "\n\n");
 
 				//content = Files.readAllBytes(pathfile);
 
