@@ -4,11 +4,11 @@ import java.nio.file.*;
 import java.util.*;
 
 /**
- * NETWORKING ASSIGNMENT
+ * PRACTICE FILE FOR THE NETWORKING ASSIGNMENT
  * @author Daniel Weiner
  *
  */
-public class FileSrv2pm {
+public class FileSrv5pm {
 
 	public static void main(String[] args) throws IOException {
 		String currentDir = System.getProperty("user.dir");
@@ -29,7 +29,7 @@ public class FileSrv2pm {
 			BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
 			//String password = "1234";
-			//boolean loggedIn = true;
+			boolean loggedIn = false;
 
 			String req = "";
 			String line;
@@ -109,55 +109,69 @@ public class FileSrv2pm {
 			String status;
 			String url = "http://localhost:11114/src/";
 			byte[] content;
-			if (dir.isDirectory()) {
+			if (!loggedIn)
+			{
 				status = "200 OK";
-				File[] listOfFiles = dir.listFiles();
-				body += "<html><body>";
-				for (int i = 0; i < listOfFiles.length; i++) {
-					if (listOfFiles[i].isFile()) {
-						System.out.println("File " + listOfFiles[i].getName());
-						//body += "this file is: " + listOfFiles[i] + "<br>";
-						//String link = listOfFiles[i].getName().split(".")[0];
-						String link = listOfFiles[i].getName();
-						body += "<a href =\"" + url +  link +"\">" + link + "</a><br>";
-
-					} else if (listOfFiles[i].isDirectory()) {
-						System.out.println("Directory " + listOfFiles[i].getName());
-					}
-
-				}					
-				body += "</body></html>";
+				body += "<html><body><label for=\"Password\">Password:</label><input type=\"text\" id=\"Password\" name=\"Password\">";
 				content = body.getBytes();
 				String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
 						"Content-Length: " +
-						//body.length() +
 						content.length + crlf + "Set-Cookie: color="+color + "; Path=/" + crlf + crlf;
-				//	    String resp = head + body;
 				out.write(head.getBytes());
 				out.write(content);
-				System.out.println("\n\n" + head + "\n\n");
-
-				//content = Files.readAllBytes(pathfile);
-
 			}
-			else {
-				if (!exists) {
-					body = "<html><body>this file does not exist: " + pathfile + "</body></html>";
-					content = body.getBytes();
-					status = "404 File Not Found";
-				} else {
-					body = "the file exists; here's where its content should go";
+			else
+			{
+				if (dir.isDirectory()) {
 					status = "200 OK";
-					content = Files.readAllBytes(pathfile);
-				}	    
+					File[] listOfFiles = dir.listFiles();
+					body += "<html><body>";
+					for (int i = 0; i < listOfFiles.length; i++) {
+						if (listOfFiles[i].isFile()) {
+							System.out.println("File " + listOfFiles[i].getName());
+							//body += "this file is: " + listOfFiles[i] + "<br>";
+							//String link = listOfFiles[i].getName().split(".")[0];
+							String link = listOfFiles[i].getName();
+							body += "<a href =\"" + url +  link +"\">" + link + "</a><br>";
 
-				String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
-						"Content-Length: " +
-						//body.length() +
-						content.length + crlf + "Set-Cookie: color="+color + crlf + crlf;
-				//	    String resp = head + body;
-				out.write(head.getBytes());
-				out.write(content);
+						} else if (listOfFiles[i].isDirectory()) {
+							System.out.println("Directory " + listOfFiles[i].getName());
+						}
+
+					}					
+					body += "</body></html>";
+					content = body.getBytes();
+					String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
+							"Content-Length: " +
+							//body.length() +
+							content.length + crlf + "Set-Cookie: color="+color + "; Path=/" + crlf + crlf;
+					//	    String resp = head + body;
+					out.write(head.getBytes());
+					out.write(content);
+					System.out.println("\n\n" + head + "\n\n");
+
+					//content = Files.readAllBytes(pathfile);
+
+				}
+				else {
+					if (!exists) {
+						body = "<html><body>this file does not exist: " + pathfile + "</body></html>";
+						content = body.getBytes();
+						status = "404 File Not Found";
+					} else {
+						body = "the file exists; here's where its content should go";
+						status = "200 OK";
+						content = Files.readAllBytes(pathfile);
+					}	    
+
+					String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
+							"Content-Length: " +
+							//body.length() +
+							content.length + crlf + "Set-Cookie: color="+color + crlf + crlf;
+					//	    String resp = head + body;
+					out.write(head.getBytes());
+					out.write(content);
+				}
 			}
 			out.flush();
 			out.close();
