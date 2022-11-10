@@ -56,13 +56,42 @@ public class FileSrv5pm {
 			System.out.println("\n\n\n!!!!!!!!!!!!" + dir.isDirectory() + "\n\n\n");
 			System.out.println("\n\n\n!!!!!!!!!!!!" + dir + "\n\n\n");
 			
-
+			
+			String fline = req.split("\r\n")[0];
+			System.out.println("firstline: "+fline);
+			String getParamL = fline.substring(fline.indexOf("?")+1,fline.indexOf("HTTP")-1);
+			//String path2 = firstline.split(" ")[1].substring(2);
+			System.out.println("getParmList: "+getParamL); //+",path2="+path2+".");
+			String[] GETKeyV = getParamL.split("&");
+			for (int i = 0; i < GETKeyV.length; i++) {
+				System.out.println("   get param: " + GETKeyV[i]);
+				String[] keyAndVal = GETKeyV[i].split("=");
+				if (keyAndVal[0].equals("password")) {
+					password = keyAndVal[1];
+					System.out.println("\n\n!!!!!password value from get param: "+ password + "\n\n");
+				}
+			}
+			if (password == null)
+			{
+				String cookLine = req.split("Cookie: ")[1];
+				cookLine = cookLine.split("\r\n")[0];
+				String[] cookKeyAndVal = cookLine.split("=");
+				if (cookKeyAndVal[0].equals("password"))
+					password = cookKeyAndVal[1];
+				System.out.println("!!!!password from cookie: " + password);
+			}
+			
+			
+			
+			if ("1234".equals(password)) loggedIn = true;
+			
 			String body = "";
 			String status;
 			String url = "http://localhost:11114/src/";
 			byte[] content;
 			if (!loggedIn)
 			{
+				/*
 				String fline = req.split("\r\n")[0];
 				System.out.println("firstline: "+fline);
 				String getParamL = fline.substring(fline.indexOf("?")+1,fline.indexOf("HTTP")-1);
@@ -72,7 +101,7 @@ public class FileSrv5pm {
 				for (int i = 0; i < GETKeyV.length; i++) {
 					System.out.println("   get param: " + GETKeyV[i]);
 					String[] keyAndVal = GETKeyV[i].split("=");
-					if (keyAndVal[0].equals("1234")) {
+					if (keyAndVal[0].equals("password")) {
 						password = keyAndVal[1];
 						System.out.println("\n\n!!!!!password value from get param: "+ password + "\n\n");
 					}
@@ -86,11 +115,11 @@ public class FileSrv5pm {
 						password = cookKeyAndVal[1];
 					System.out.println("!!!!password from cookie: " + password);
 				}
+				*/
 				status = "200 OK";
-				body += "<html><body><input type=\"password\" id=\"password\" name=\"password\"><br /><input type=\"submit\" value=\"Login\"></body></html>";
+				body += "<html><body><form name=\"loginForm\"><input type=\"password\" id=\"password\" name=\"password\"><br /><input type=\"submit\" value=\"Login\"></form></body></html>";
 				content = body.getBytes();
-				String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
-						"Content-Length: " +
+				String head = "HTTP/1.1 " + status + crlf + "Content-Length: " +
 						content.length + crlf + "Set-Cookie: password="+password + "; Path=/" + crlf + crlf;
 				out.write(head.getBytes());
 				out.write(content);
@@ -116,7 +145,7 @@ public class FileSrv5pm {
 					}					
 					body += "</body></html>";
 					content = body.getBytes();
-					String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
+					String head = "HTTP/1.1 " + status + crlf +
 							"Content-Length: " +
 							//body.length() +
 							content.length + crlf + "Set-Cookie: password="+password + "; Path=/" + crlf + crlf;
@@ -139,7 +168,7 @@ public class FileSrv5pm {
 						content = Files.readAllBytes(pathfile);
 					}	    
 
-					String head = "HTTP/1.1 " + status + crlf + "Connection: close" + crlf +
+					String head = "HTTP/1.1 " + status + crlf +
 							"Content-Length: " +
 							//body.length() +
 							content.length + crlf + "Set-Cookie: password="+password + crlf + crlf;
